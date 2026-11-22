@@ -98,7 +98,9 @@ if let pod_archive_path = ProcessInfo.processInfo.environment["ORT_POD_LOCAL_PAT
     // ORT release
     package.targets.append(
        Target.binaryTarget(name: "onnxruntime",
-                           url: "https://download.onnxruntime.ai/pod-archive-onnxruntime-c-1.19.2.zip",
+                           // Microsoft's download host and this repository's original home are gone (Nov 2026); the same archive is
+                           // a release asset here. The checksum is Microsoft's, so only the identical file is accepted.
+                           url: "https://github.com/Ashad001/onnxruntime-swift-package-manager/releases/download/1.19.2-vault.1/pod-archive-onnxruntime-c-1.19.2.zip",
                            // SHA256 checksum
                            checksum: "28787ee2f966a2c47eb293322c733c5dc4b5e3327cec321c1fe31a7c698edf68")
     )
