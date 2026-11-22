@@ -27,9 +27,6 @@ let package = Package(
         .library(name: "onnxruntime",
                  type: .static,
                  targets: ["OnnxRuntimeBindings"]),
-        .library(name: "onnxruntime_extensions",
-                 type: .static,
-                 targets: ["OnnxRuntimeExtensions"]),
     ],
     dependencies: [],
     targets: [
@@ -52,18 +49,6 @@ let package = Package(
                     path: "swift/OnnxRuntimeBindingsTests",
                     resources: [
                         .copy("Resources/single_add.basic.ort")
-                    ]),
-        .target(name: "OnnxRuntimeExtensions",
-                dependencies: ["onnxruntime_extensions", "onnxruntime"],
-                path: "extensions",
-                cxxSettings: [
-                    .define("ORT_SWIFT_PACKAGE_MANAGER_BUILD"),
-                ]),
-        .testTarget(name: "OnnxRuntimeExtensionsTests",
-                    dependencies: ["OnnxRuntimeExtensions", "OnnxRuntimeBindings"],
-                    path: "swift/OnnxRuntimeExtensionsTests",
-                    resources: [
-                        .copy("Resources/decode_image.onnx")
                     ]),
     ],
     cxxLanguageStandard: .cxx17
@@ -106,14 +91,5 @@ if let pod_archive_path = ProcessInfo.processInfo.environment["ORT_POD_LOCAL_PAT
     )
 }
 
-if let ext_pod_archive_path = ProcessInfo.processInfo.environment["ORT_EXTENSIONS_POD_LOCAL_PATH"] {
-    package.targets.append(Target.binaryTarget(name: "onnxruntime_extensions", path: ext_pod_archive_path))
-} else {
-    // ORT Extensions release
-    package.targets.append(
-        Target.binaryTarget(name: "onnxruntime_extensions",
-                            url: "https://download.onnxruntime.ai/pod-archive-onnxruntime-extensions-c-0.12.0.zip",
-                            // SHA256 checksum
-                            checksum: "542be5904cf2cc93db6b8afcd11b023b001333e3151bea8bff1c7b1cf8959fab")
-    )
-}
+// ONNX Runtime Extensions is left out of this copy: its 0.12.0 archive was only ever on Microsoft's download host,
+// which is gone, and nothing here can serve Microsoft's exact file. Use the original package if you need it.
